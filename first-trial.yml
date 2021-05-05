@@ -1,0 +1,40 @@
+# docker-compose.yml
+version: "3"
+#
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always   
+    ports:
+      - 5433:5432
+    environment:
+    #  POSTGRES_USER: postgres
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "1022"
+      POSTGRES_DB: testdb
+      PGDATA: "/pg-data"  
+#
+  jupyter:
+      container_name: jupyter-postres
+      image: jupyter/datascience-notebook:latest
+        #image: jupyter/datascience-notebook:julia-1.5.1
+      user: root
+      environment:
+        - GRANT_SUDO=yes
+        - JUPYTER_ENABLE_LAB=yes
+        - JUPYTER_TOKEN=1022
+      volumes:
+        - /mnt/c/Users/anari/github:/home/jovyan/github-anari
+      ports:
+        - "8888:8888"
+        - "8501-8510:8501-8510"
+      depends_on:
+        - postgres
+      #networks:
+      #  - demo-net
+#
+#networks:
+#  demo-net:
+#    driver: bridge
+#sudo docker-compose -f /mnt/c/Users/github/setup-docker_with_db/560/first-trial.yml -p "postgresql" up -d
